@@ -117,7 +117,7 @@ def create_interface():
                 process_directory_button = gr.Button("Process Directory")
 
             with gr.Column(scale=3):
-                output_images = gr.Gallery(type="pil", label="Adversarial Image", preview=True, height="90vh")
+                output_images = gr.Gallery(type="pil", label="Output", preview=True, height="90vh")
 
             process_image_button.click(
                 process_image_interface,
