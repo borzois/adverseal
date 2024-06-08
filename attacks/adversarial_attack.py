@@ -17,7 +17,7 @@ def adversarial_attack(models, attack_type: AttackMethod, x, accelerator, target
     print("Performing adversarial attack: {}".format(attack_type.value))
     match attack_type:
         case AttackMethod.PGD:
-            return pgd_attack(models, x, accelerator, target_tensor, num_steps, alpha=alpha, eps=eps)
+            return pgd_attack(models, x, accelerator, target_tensor, num_steps=num_steps, alpha=alpha, eps=eps)
         case AttackMethod.FGSM:
             return fgsm_attack(models, x, accelerator, target_tensor, alpha=alpha)
         case AttackMethod.CW:
