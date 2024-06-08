@@ -7,6 +7,7 @@ from enum import Enum
 from attacks.adversarial_attack import adversarial_attack, AttackMethod
 from util.util import *
 import gradio as gr
+from PIL import Image
 
 
 class EnabledAttackMethod(Enum):
@@ -19,6 +20,7 @@ default_target_image = "Seals"
 WEIGHT_DTYPE = torch.float16
 CUDA_ENABLED = torch.cuda.is_available()
 STABLE_DIFFUSION_PATH = 'models/stable-diffusion/'
+MAX_IMG_SIZE = 800
 
 if not CUDA_ENABLED:
     accelerator = Accelerator(
@@ -30,17 +32,15 @@ else:
         mixed_precision="fp16"
     )
 
-# model = DiffusionPipeline.from_pretrained(STABLE_DIFFUSION_PATH, use_safetensors=True)
 text_encoder = CLIPTextModel.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='text_encoder')
 unet = UNet2DConditionModel.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='unet')
 tokenizer = CLIPTokenizer.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='tokenizer')
 scheduler = PNDMScheduler.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='scheduler')
 
-vae = None
-if not CUDA_ENABLED:
-    vae = AutoencoderKL.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='vae').cuda()
-else:
-    vae = AutoencoderKL.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='vae')
+vae = AutoencoderKL.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='vae')
+if CUDA_ENABLED:
+    vae = vae.cuda()
+
 vae.to(accelerator.device, dtype=WEIGHT_DTYPE)
 
 models = {
@@ -54,6 +54,16 @@ models = {
 
 # process one image
 def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
+    # Scale image if size is too large
+    width, height = input_img.size
+    if width > MAX_IMG_SIZE or height > MAX_IMG_SIZE:
+        scaling_factor = min(MAX_IMG_SIZE / width, MAX_IMG_SIZE / height)
+
+        new_width = int(width * scaling_factor)
+        new_height = int(height * scaling_factor)
+
+        input_img = input_img.resize((new_width, new_height), Image.BICUBIC)
+
     # Convert the input PIL images to tensors
     input_img_tensor = preprocess(input_img).unsqueeze(0)
 
