@@ -75,6 +75,9 @@ def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
     # Free the memory
     target_img_tensor = target_img_tensor.to('cpu')
     del target_img_tensor
+    for model in models.values():
+        if model is not None:
+            model.to('cpu')
 
     # Perform the adversarial attack
     adversarial_image = adversarial_attack(models, attack_method, input_img_tensor, accelerator, target_latent_tensor, num_steps=num_steps, alpha=alpha, eps=eps)
