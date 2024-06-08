@@ -68,6 +68,7 @@ def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
         input_img_tensor = input_img_tensor.to(dtype=WEIGHT_DTYPE)
         target_img_tensor = torch.from_numpy(target_img).to(dtype=WEIGHT_DTYPE) / 255.0
 
+    print_tensor_info()
     # Encode the target image to get the latent tensor
     target_latent_tensor = vae.encode(target_img_tensor).latent_dist.sample().to(dtype=WEIGHT_DTYPE) * vae.config.scaling_factor
 

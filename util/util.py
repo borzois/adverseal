@@ -2,7 +2,17 @@ import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 from torchvision.transforms import transforms
+import gc
+import torch
 
+
+def print_tensor_info():
+    for obj in gc.get_objects():
+        try:
+            if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
+                print(type(obj), obj.size())
+        except:
+            pass
 
 def display_image(image, step, total_steps):
     """Display the perturbed image using matplotlib."""
