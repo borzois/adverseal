@@ -90,6 +90,7 @@ def toggle_sliders(attack_type):
 
 
 def create_interface():
+    default_target_image = "Seals"
     with gr.Blocks(theme="gradio/monochrome", title="Adverseal") as main_interface:
         with gr.Row():
             with gr.Column(scale=2):
