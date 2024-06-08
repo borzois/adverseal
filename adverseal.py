@@ -71,6 +71,10 @@ def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
     # Encode the target image to get the latent tensor
     target_latent_tensor = vae.encode(target_img_tensor).latent_dist.sample().to(dtype=WEIGHT_DTYPE) * vae.config.scaling_factor
 
+    # Free the memory
+    target_img_tensor = target_img_tensor.to('cpu')
+    del target_img_tensor
+
     # Perform the adversarial attack
     adversarial_image = adversarial_attack(models, attack_method, input_img_tensor, accelerator, target_latent_tensor, num_steps=num_steps, alpha=alpha, eps=eps)
 
