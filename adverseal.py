@@ -30,7 +30,7 @@ else:
         mixed_precision="fp16"
     )
 
-model = DiffusionPipeline.from_pretrained(STABLE_DIFFUSION_PATH, use_safetensors=True)
+# model = DiffusionPipeline.from_pretrained(STABLE_DIFFUSION_PATH, use_safetensors=True)
 text_encoder = CLIPTextModel.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='text_encoder')
 unet = UNet2DConditionModel.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='unet')
 tokenizer = CLIPTokenizer.from_pretrained(STABLE_DIFFUSION_PATH, subfolder='tokenizer')
