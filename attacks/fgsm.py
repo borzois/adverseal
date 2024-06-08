@@ -1,4 +1,10 @@
-def fgsm_attack(models, input_image, accelerator, target_tensor, instance_prompt='a picture', alpha=2.0/255.0):
+import torch
+from torch import autograd
+from attacks.common import encode_image, add_noise_to_latents, compute_loss
+import torch.nn.functional as F
+
+
+def fgsm_attack(models, input_image, accelerator, target_tensor, weight_dtype=torch.float16, instance_prompt='a picture', alpha=2.0/255.0):
     """Return new perturbed data for a single image using FGSM attack"""
 
     print('Performing FGSM on image with shape {}'.format(input_image.shape))
@@ -15,9 +21,9 @@ def fgsm_attack(models, input_image, accelerator, target_tensor, instance_prompt
     device = accelerator.device
 
     # Move models to the specified device and set data types
-    vae.to(device, dtype=WEIGHT_DTYPE)
-    text_encoder.to(device, dtype=WEIGHT_DTYPE)
-    unet.to(device, dtype=WEIGHT_DTYPE)
+    vae.to(device, dtype=weight_dtype)
+    text_encoder.to(device, dtype=weight_dtype)
+    unet.to(device, dtype=weight_dtype)
 
     # Disable gradient computation
     vae.requires_grad_(False)
@@ -41,7 +47,7 @@ def fgsm_attack(models, input_image, accelerator, target_tensor, instance_prompt
 
     # Encode the current perturbed image
     perturbed_image.requires_grad_(False)
-    latents = encode_image(vae, perturbed_image, device, WEIGHT_DTYPE)
+    latents = encode_image(vae, perturbed_image, device, weight_dtype)
     latents.requires_grad_(True)
     print('Encoded the perturbed image. Shape: {}'.format(perturbed_image.cpu().detach().numpy().shape))
 
@@ -78,7 +84,7 @@ def fgsm_attack(models, input_image, accelerator, target_tensor, instance_prompt
 
     # Nudge the image according to the gradients (FGSM step)
     perturbed_image.requires_grad_(True)
-    gc_latents = vae.encode(perturbed_image.to(device, dtype=WEIGHT_DTYPE)).latent_dist.mean
+    gc_latents = vae.encode(perturbed_image.to(device, dtype=weight_dtype)).latent_dist.mean
     gc_latents.backward(gradient=grads)
 
     adv_images = perturbed_image + alpha * perturbed_image.grad.sign()

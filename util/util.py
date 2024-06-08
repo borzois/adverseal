@@ -1,3 +1,9 @@
+import numpy as np
+from PIL import Image
+from matplotlib import pyplot as plt
+from torchvision.transforms import transforms
+
+
 def display_image(image, step, total_steps):
     """Display the perturbed image using matplotlib."""
     img_np = image.cpu().detach().numpy().squeeze().transpose(1, 2, 0)
@@ -60,3 +66,16 @@ def tensor_to_pil(tensor):
     tensor = tensor.squeeze().detach().cpu()
     img = transforms.ToPILImage()(tensor)
     return img
+
+
+preprocess = transforms.Compose([
+    transforms.ToTensor(),
+])
+
+
+def load_target_image(target_image_name):
+    TARGET_IMAGE_PATHS = {
+        "Seals": "/content/drive/MyDrive/dataset/seals.png",
+        "Fayum": "/content/drive/MyDrive/dataset/target1.jpg"
+    }
+    return Image.open(TARGET_IMAGE_PATHS[target_image_name])

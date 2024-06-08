@@ -1,3 +1,7 @@
+import torch
+import torch.nn.functional as F
+
+
 def add_noise_to_latents(noise_scheduler, latents, noise, timesteps):
     """Add noise to the latents according to the noise magnitude at each timestep."""
     print("Adding noise to latents according to noise magnitude at timestep {}".format(timesteps))
