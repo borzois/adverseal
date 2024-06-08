@@ -7,5 +7,4 @@ matplotlib
 transformers
 diffusers
 accelerate
-enum34
 gradio
