@@ -76,7 +76,7 @@ def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
     target_img_tensor = target_img_tensor.to('cpu')
     del target_img_tensor
     for model in models.values():
-        if model is not None:
+        if model is not None and type(model) != CLIPTokenizer and type(model) != PNDMScheduler:
             model.to('cpu')
 
     # Perform the adversarial attack
