@@ -78,7 +78,7 @@ def process_image(input_img, target_img, attack_method, num_steps, alpha, eps):
         input_img_tensor = input_img_tensor.to(dtype=WEIGHT_DTYPE)
         target_img_tensor = torch.from_numpy(target_img).to(dtype=WEIGHT_DTYPE) / 255.0
 
-    print_tensor_info()
+    # print_tensor_info()
     # Encode the target image to get the latent tensor
     target_latent_tensor = vae.encode(target_img_tensor).latent_dist.sample().to(dtype=WEIGHT_DTYPE) * vae.config.scaling_factor
 
@@ -161,7 +161,7 @@ with gr.Blocks(theme="gradio/monochrome", title="Adverseal") as main_interface:
 
             attack_type_radio = gr.Radio([method.name for method in EnabledAttackMethod], label="Attack Type",
                                          value="PGD")
-            alpha_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, value=0.018, label="Alpha")
+            alpha_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, value=0.11, label="Alpha")
             eps_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, value=0.062, label="Epsilon")
             num_steps_slider = gr.Slider(minimum=1, maximum=150, step=1, value=20, label="Number of Steps")
 
