@@ -13,6 +13,11 @@ class AttackMethod(Enum):
     JSMA = "Jacobian-based Saliency Map Attack"
 
 
+class EnabledAttackMethod(Enum):
+    PGD = AttackMethod.PGD.value
+    FGSM = AttackMethod.FGSM.value
+
+
 def adversarial_attack(models, attack_type: AttackMethod, x, accelerator, target_tensor, num_steps=1, alpha=2.0/255.0, eps=8.0/255.0):
     print("Performing adversarial attack: {}".format(attack_type.value))
     match attack_type:
