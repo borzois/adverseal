@@ -75,7 +75,7 @@ preprocess = transforms.Compose([
 
 def load_target_image(target_image_name):
     TARGET_IMAGE_PATHS = {
-        "Seals": "/content/drive/MyDrive/dataset/seals.png",
-        "Fayum": "/content/drive/MyDrive/dataset/target1.jpg"
+        "Seals": "data/seals.png",
+        "Fayum": "data/fayum.jpg"
     }
     return Image.open(TARGET_IMAGE_PATHS[target_image_name])

@@ -18,7 +18,7 @@ default_target_image = "Seals"
 
 WEIGHT_DTYPE = torch.float16
 CUDA_ENABLED = torch.cuda.is_available()
-STABLE_DIFFUSION_PATH = 'models/stable-diffusion-1-5/'
+STABLE_DIFFUSION_PATH = 'models/stable-diffusion/'
 
 if not CUDA_ENABLED:
     accelerator = Accelerator(
@@ -185,4 +185,4 @@ with gr.Blocks(theme="gradio/monochrome", title="Adverseal") as main_interface:
 
 
 if __name__ == '__main__':
-    main_interface.launch(debug=True)
+    main_interface.launch(share=True)
