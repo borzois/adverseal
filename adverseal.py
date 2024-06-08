@@ -97,7 +97,7 @@ class AdversealApp:
                     eps_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, value=0.062, label="Epsilon")
                     num_steps_slider = gr.Slider(minimum=1, maximum=150, step=1, value=20, label="Number of Steps")
 
-                    attack_type_radio.change(toggle_sliders, inputs=attack_type_radio,
+                    attack_type_radio.change(self.toggle_sliders, inputs=attack_type_radio,
                                              outputs=[num_steps_slider, eps_slider])
 
                     with gr.Accordion("Advanced", open=False):
@@ -169,7 +169,7 @@ class AdversealApp:
             output_img_path = os.path.join(output_dir, filename)
             output_img_pil.save(output_img_path)
         return output_images
-    
+
 
 if __name__ == '__main__':
     STABLE_DIFFUSION_PATH = 'models/stable-diffusion/'
