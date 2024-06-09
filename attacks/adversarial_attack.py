@@ -1,9 +1,7 @@
 from enum import Enum
 
 from attacks.pgd import pgd_attack
-from attacks.cw import cw_attack
 from attacks.fgsm import fgsm_attack
-from attacks.jsma import jsma_attack
 
 
 class AttackMethod(Enum):
@@ -26,8 +24,8 @@ def adversarial_attack(models, attack_type: AttackMethod, x, accelerator, target
         case AttackMethod.FGSM:
             return fgsm_attack(models, x, accelerator, target_tensor, instance_prompt=instance_prompt, alpha=alpha)
         case AttackMethod.CW:
-            return cw_attack(models, x, accelerator, target_tensor, num_steps)
+            raise NotImplementedError("Attack not implemented: {}".format(attack_type))
         case AttackMethod.JSMA:
-            return jsma_attack(models, x, accelerator, target_tensor, num_steps)
+            raise NotImplementedError("Attack not implemented: {}".format(attack_type))
         case _:
             raise ValueError("Unknown attack method: {}".format(attack_type))

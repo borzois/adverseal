@@ -14,6 +14,7 @@ def print_tensor_info():
         except:
             pass
 
+
 def display_image(image, step, total_steps):
     """Display the perturbed image using matplotlib."""
     img_np = image.cpu().detach().numpy().squeeze().transpose(1, 2, 0)
