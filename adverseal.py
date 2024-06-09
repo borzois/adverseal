@@ -35,6 +35,7 @@ class AdversealApp:
                                                       value=default_target_image)
                         target_image_preview = gr.Image(label="Target Image Preview", width=100,
                                                         value=load_target_image(default_target_image))
+                        prompt = gr.Textbox(label="Image prompt", value="a picture")
 
                         target_image_radio.change(load_target_image, inputs=target_image_radio,
                                                   outputs=target_image_preview)
@@ -47,13 +48,13 @@ class AdversealApp:
 
                 process_image_button.click(
                     self.process_image_interface,
-                    inputs=[input_image, target_image_radio, attack_type_radio, num_steps_slider, alpha_slider,
+                    inputs=[input_image, target_image_radio, attack_type_radio, prompt, num_steps_slider, alpha_slider,
                             eps_slider],
                     outputs=output_images
                 )
                 process_directory_button.click(
                     self.process_directory_interface,
-                    inputs=[input_directory, output_directory, target_image_radio, attack_type_radio, num_steps_slider,
+                    inputs=[input_directory, output_directory, target_image_radio, attack_type_radio, prompt, num_steps_slider,
                             alpha_slider, eps_slider],
                     outputs=output_images
                 )
@@ -65,16 +66,16 @@ class AdversealApp:
         else:
             return gr.update(visible=False), gr.update(visible=False)
 
-    def process_image_interface(self, uploaded_image, target_image_name, attack_type, num_steps, alpha, eps):
+    def process_image_interface(self, uploaded_image, target_image_name, attack_type, prompt, num_steps, alpha, eps):
         # Load the target image as a PIL image
         target_image = load_target_image(target_image_name)
         attack_method = AttackMethod[attack_type]
 
         # Process the image and return the result
-        output_img_pil = processor.process_image(uploaded_image, target_image, attack_method, num_steps, alpha, eps)
+        output_img_pil = processor.process_image(uploaded_image, target_image, attack_method, prompt, num_steps, alpha, eps)
         return [output_img_pil]
 
-    def process_directory_interface(self, input_dir, output_dir, target_image_name, attack_type, num_steps, alpha, eps):
+    def process_directory_interface(self, input_dir, output_dir, target_image_name, attack_type, prompt, num_steps, alpha, eps):
         # Load the target image as a PIL image
         target_image = load_target_image(target_image_name)
         attack_method = AttackMethod[attack_type]
@@ -90,7 +91,7 @@ class AdversealApp:
             input_img = Image.open(input_img_path).convert("RGB")
 
             # Process the image
-            output_img_pil = processor.process_image(input_img, target_image, attack_method, num_steps, alpha, eps)
+            output_img_pil = processor.process_image(input_img, target_image, attack_method, prompt, num_steps, alpha, eps)
 
             # Add the image to the list
             output_images.append(output_img_pil)

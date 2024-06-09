@@ -18,13 +18,13 @@ class EnabledAttackMethod(Enum):
     FGSM = AttackMethod.FGSM.value
 
 
-def adversarial_attack(models, attack_type: AttackMethod, x, accelerator, target_tensor, num_steps=1, alpha=2.0/255.0, eps=8.0/255.0):
+def adversarial_attack(models, attack_type: AttackMethod, x, accelerator, target_tensor, instance_prompt='a picture', num_steps=1, alpha=2.0/255.0, eps=8.0/255.0):
     print("Performing adversarial attack: {}".format(attack_type.value))
     match attack_type:
         case AttackMethod.PGD:
-            return pgd_attack(models, x, accelerator, target_tensor, num_steps=num_steps, alpha=alpha, eps=eps)
+            return pgd_attack(models, x, accelerator, target_tensor, instance_prompt=instance_prompt, num_steps=num_steps, alpha=alpha, eps=eps)
         case AttackMethod.FGSM:
-            return fgsm_attack(models, x, accelerator, target_tensor, alpha=alpha)
+            return fgsm_attack(models, x, accelerator, target_tensor, instance_prompt=instance_prompt, alpha=alpha)
         case AttackMethod.CW:
             return cw_attack(models, x, accelerator, target_tensor, num_steps)
         case AttackMethod.JSMA:

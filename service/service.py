@@ -16,9 +16,9 @@ class Adverseal:
 
         self.accelerator = Accelerator(mixed_precision="fp16", cpu=not self.cuda_enabled)
 
-        self.models = self.load_models(model_path)
+        self.models = self._load_models(model_path)
 
-    def load_models(self, model_path):
+    def _load_models(self, model_path):
         text_encoder = CLIPTextModel.from_pretrained(model_path, subfolder='text_encoder')
         unet = UNet2DConditionModel.from_pretrained(model_path, subfolder='unet')
         tokenizer = CLIPTokenizer.from_pretrained(model_path, subfolder='tokenizer')
@@ -37,8 +37,8 @@ class Adverseal:
             'vae': vae
         }
 
-    def process_image(self, input_img, target_img, attack_method, num_steps, alpha, eps):
-        input_img = self.resize_image(input_img)
+    def process_image(self, input_img, target_img, attack_method, prompt, num_steps, alpha, eps):
+        input_img = self._resize_image(input_img)
         input_img_tensor = preprocess(input_img).unsqueeze(0)
 
         target_img = target_img.convert("RGB").resize(input_img.size)
@@ -61,10 +61,10 @@ class Adverseal:
                 model.to('cpu')
 
         adversarial_image = adversarial_attack(self.models, attack_method, input_img_tensor, self.accelerator,
-                                               target_latent_tensor, num_steps=num_steps, alpha=alpha, eps=eps)
+                                               target_latent_tensor, instance_prompt=prompt, num_steps=num_steps, alpha=alpha, eps=eps)
         return tensor_to_pil(adversarial_image)
 
-    def resize_image(self, img):
+    def _resize_image(self, img):
         width, height = img.size
         if width > self.max_img_size or height > self.max_img_size:
             scaling_factor = min(self.max_img_size / width, self.max_img_size / height)
